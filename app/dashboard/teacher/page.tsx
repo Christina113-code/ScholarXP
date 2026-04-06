@@ -44,7 +44,8 @@ export default function TeacherDashboardPage() {
       router.replace("/login");
       return;
     }
-
+    // Wait for real profile
+    if (profile === null) return;
     if (!profileLoading) {
       if (!profile?.role) {
         router.replace("/select-role");
@@ -81,9 +82,7 @@ export default function TeacherDashboardPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-[18px] font-semibold">
-        Welcome, {displayName}
-      </div>
+      <div className="text-[18px] font-semibold">Welcome, {displayName}</div>
 
       <Card className="p-[16px]">
         <div className="flex items-start justify-between gap-6">
@@ -122,4 +121,3 @@ export default function TeacherDashboardPage() {
     </div>
   );
 }
-

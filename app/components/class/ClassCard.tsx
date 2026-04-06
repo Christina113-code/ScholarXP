@@ -14,7 +14,7 @@ export default function ClassCard({ classRow }: { classRow: ClassesRow }) {
           <div className="mt-2 text-[#6B7280] text-[13px]">
             Class code:{" "}
             <span className="font-semibold text-[#5C6AC4]">
-              {classRow.code}
+              {classRow.join_code ?? "No code"}
             </span>
           </div>
         </div>
@@ -22,4 +22,3 @@ export default function ClassCard({ classRow }: { classRow: ClassesRow }) {
     </Card>
   );
 }
-

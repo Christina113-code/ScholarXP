@@ -8,13 +8,13 @@ export async function fetchMyProfile(
   userId: string
 ): Promise<ProfilesRow | null> {
   const { data, error } = await supabase
-    .from<ProfilesRow>("profiles")
+    .from("profiles")
     .select("*")
     .eq("id", userId)
     .maybeSingle();
 
   if (error) throw error;
-  return data ?? null;
+  return (data as ProfilesRow | null) ?? null;
 }
 
 export async function upsertMyProfileRole(
@@ -26,7 +26,7 @@ export async function upsertMyProfileRole(
   }
 ): Promise<ProfilesRow> {
   const { data, error } = await supabase
-    .from<ProfilesRow>("profiles")
+    .from("profiles")
     .upsert(
       {
         id: input.userId,
@@ -39,6 +39,6 @@ export async function upsertMyProfileRole(
     .single();
 
   if (error) throw error;
-  return data;
+  return data as ProfilesRow;
 }
 

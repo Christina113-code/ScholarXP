@@ -12,8 +12,8 @@ export type ProfilesRow = {
 export type ClassesRow = {
   id: string;
   name: string;
-  code: string;
-  created_by: string;
+  join_code: string | null;
+  created_at: string;
 };
 
 export type ClassMembersRow = {
@@ -21,4 +21,3 @@ export type ClassMembersRow = {
   class_id: string;
   user_id: string;
 };
-
