@@ -44,7 +44,8 @@ export default function StudentDashboardPage() {
       router.replace("/login");
       return;
     }
-
+    // Wait for real profile
+    if (profile === null) return;
     if (!profileLoading) {
       if (!profile?.role) {
         router.replace("/select-role");
@@ -120,4 +121,3 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
-

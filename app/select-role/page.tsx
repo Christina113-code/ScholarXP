@@ -32,7 +32,7 @@ export default function SelectRole() {
           : "/dashboard/student",
       );
     }
-  }, [authLoading, profileLoading, user, profile?.role, router]);
+  }, [authLoading, profileLoading, user, profile, router]);
 
   const chooseRole = async (role: "teacher" | "student") => {
     if (!user) return;

@@ -6,19 +6,23 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import type { ClassesRow } from "@/app/types/supabase";
+import Link from "next/link";
 import { getMyTeacherClasses } from "@/app/lib/queries/classes";
 import { useAuthUser } from "@/app/hooks/useAuthUser";
 import { useMyProfile } from "@/app/hooks/useMyProfile";
+import { useDeleteClass } from "@/app/hooks/useDeleteClass";
 import ClassCard from "@/app/components/class/ClassCard";
 import CreateClassForm from "@/app/components/class/CreateClassForm";
 import Spinner from "@/app/components/ui/Spinner";
 import Card from "@/app/components/ui/Card";
+import Button from "@/app/components/ui/Button";
 
 export default function TeacherDashboardPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuthUser();
   const userId = user?.id ?? null;
   const { profile, loading: profileLoading, refresh } = useMyProfile(userId);
+  const { deleteClass: runDeleteClass, loading: deleting } = useDeleteClass();
 
   const [classes, setClasses] = useState<ClassesRow[]>([]);
   const [loadingClasses, setLoadingClasses] = useState(false);
@@ -56,7 +60,7 @@ export default function TeacherDashboardPage() {
         return;
       }
     }
-  }, [authLoading, userId, profileLoading, profile?.role, router]);
+  }, [authLoading, userId, profileLoading, profile, router]);
 
   useEffect(() => {
     if (!userId) return;
@@ -67,6 +71,14 @@ export default function TeacherDashboardPage() {
 
   const handleCreated = async () => {
     await refresh();
+    await loadClasses();
+  };
+
+  const handleDelete = async (classId: string) => {
+    if (!userId) return;
+    const ok = confirm("Delete this class? This cannot be undone.");
+    if (!ok) return;
+    await runDeleteClass({ classId, teacherId: userId });
     await loadClasses();
   };
 
@@ -110,7 +122,30 @@ export default function TeacherDashboardPage() {
           ) : null}
 
           {!loadingClasses
-            ? classes.map((c) => <ClassCard key={c.id} classRow={c} />)
+            ? classes.map((c) => (
+                <ClassCard
+                  key={c.id}
+                  classRow={c}
+                  actions={
+                    <>
+                      <Link
+                        href={`/classes/${c.id}/assignments/new`}
+                        className="text-[13px] font-semibold text-[#5C6AC4] hover:underline"
+                      >
+                        New assignment
+                      </Link>
+                      <Button
+                        variant="danger"
+                        className="h-[40px] px-4"
+                        disabled={deleting}
+                        onClick={() => void handleDelete(c.id)}
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  }
+                />
+              ))
             : null}
         </div>
 

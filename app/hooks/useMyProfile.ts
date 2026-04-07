@@ -10,7 +10,7 @@ import { supabase } from "@/app/lib/supabase";
 
 export function useMyProfile(userId: string | null) {
   const [profile, setProfile] = useState<ProfilesRow | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     if (!userId) {
@@ -18,10 +18,22 @@ export function useMyProfile(userId: string | null) {
       setLoading(false);
       return;
     }
+
     setLoading(true);
+
     try {
-      const row = await fetchMyProfile(supabase as SupabaseClient, userId);
-      setProfile(row);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle(); // IMPORTANT: prevents false errors
+
+      if (error) {
+        console.error("Profile fetch error:", error);
+        setProfile(null);
+      } else {
+        setProfile(data ?? null);
+      }
     } finally {
       setLoading(false);
     }
@@ -33,4 +45,3 @@ export function useMyProfile(userId: string | null) {
 
   return { profile, loading, refresh } as const;
 }
-

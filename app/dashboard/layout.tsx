@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
+import LogoutButton from "@/app/components/auth/LogoutButton";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -29,6 +30,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Teacher
             </Link>
           </nav>
+
+          <div className="mt-6">
+            <LogoutButton className="w-full" />
+          </div>
         </aside>
 
         <main className="flex-1 p-[20px]">{children}</main>

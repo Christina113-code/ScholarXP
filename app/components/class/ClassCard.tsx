@@ -2,8 +2,15 @@
 
 import type { ClassesRow } from "@/app/types/supabase";
 import Card from "@/app/components/ui/Card";
+import type { ReactNode } from "react";
 
-export default function ClassCard({ classRow }: { classRow: ClassesRow }) {
+export default function ClassCard({
+  classRow,
+  actions,
+}: {
+  classRow: ClassesRow;
+  actions?: ReactNode;
+}) {
   return (
     <Card className="p-[16px]">
       <div className="flex items-start justify-between gap-4">
@@ -18,6 +25,7 @@ export default function ClassCard({ classRow }: { classRow: ClassesRow }) {
             </span>
           </div>
         </div>
+        {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
       </div>
     </Card>
   );
