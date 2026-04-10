@@ -16,6 +16,7 @@ import CreateClassForm from "@/app/components/class/CreateClassForm";
 import Spinner from "@/app/components/ui/Spinner";
 import Card from "@/app/components/ui/Card";
 import Button from "@/app/components/ui/Button";
+import NewAssignmentModal from "@/app/components/assignment/NewAssignmentModal";
 
 export default function TeacherDashboardPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function TeacherDashboardPage() {
   const userId = user?.id ?? null;
   const { profile, loading: profileLoading, refresh } = useMyProfile(userId);
   const { deleteClass: runDeleteClass, loading: deleting } = useDeleteClass();
-
+  const [open, setOpen] = useState(false);
   const [classes, setClasses] = useState<ClassesRow[]>([]);
   const [loadingClasses, setLoadingClasses] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -128,12 +129,18 @@ export default function TeacherDashboardPage() {
                   classRow={c}
                   actions={
                     <>
-                      <Link
-                        href={`/classes/${c.id}/assignments/new`}
-                        className="text-[13px] font-semibold text-[#5C6AC4] hover:underline"
+                      <Button
+                        className="h-[36px] px-4 text-[13px]"
+                        onClick={() => setOpen(true)}
                       >
                         New assignment
-                      </Link>
+                      </Button>
+                      {open && (
+                        <NewAssignmentModal
+                          classId={c.id}
+                          onClose={() => setOpen(false)}
+                        />
+                      )}
                       <Button
                         variant="danger"
                         className="h-[40px] px-4"
