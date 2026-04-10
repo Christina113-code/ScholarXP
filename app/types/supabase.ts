@@ -23,6 +23,7 @@ export type AssignmentsRow = {
   teacher_id: string;
   title: string;
   description: string | null;
+  due_date: string;
   status: string;
   created_at: string;
   updated_at: string;

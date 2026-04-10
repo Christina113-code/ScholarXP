@@ -110,3 +110,30 @@ export async function insertAssignmentProblems(
   if (error) throw error;
 }
 
+export async function getAssignmentsForUserClass(
+  supabase: SupabaseClient,
+  classId: string,
+): Promise<AssignmentsRow[]> {
+  // // Check if user is teacher of the class
+  // const { data: teacherMatch, error: teacherErr } = await supabase
+  //   .from("classes")
+  //   .select("id")
+  //   .eq("id", classId)
+  //   .single();
+
+  // if (teacherErr && teacherErr.code !== "PGRST116") {
+  //   // PGRST116 = no rows found
+  //   throw teacherErr;
+  // }
+
+  // Fetch assignments
+  const { data: assignments, error } = await supabase
+    .from("assignments")
+    .select("*")
+    .eq("class_id", classId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return assignments ?? [];
+}

@@ -125,6 +125,8 @@ export default function TeacherDashboardPage() {
           {!loadingClasses
             ? classes.map((c) => (
                 <ClassCard
+                  supabase={supabase}
+                  classId={c.id}
                   key={c.id}
                   classRow={c}
                   actions={

@@ -1,19 +1,34 @@
-// Simple class display card (used on student/teacher dashboards).
-
-import type { ClassesRow } from "@/app/types/supabase";
+import { useState } from "react";
 import Card from "@/app/components/ui/Card";
-import type { ReactNode } from "react";
+import { getAssignmentsForUserClass } from "@/app/lib/queries/assignments";
+import { AssignmentsRow } from "@/app/types/supabase";
+import AssignmentCard from "../assignment/AssignmentCard";
 
-export default function ClassCard({
-  classRow,
-  actions,
-}: {
-  classRow: ClassesRow;
-  actions?: ReactNode;
-}) {
+export default function ClassCard({ classRow, actions, classId, supabase }) {
+  const [open, setOpen] = useState(false);
+  const [assignments, setAssignments] = useState<AssignmentsRow[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  async function toggleOpen() {
+    setOpen(!open);
+    console.log("assignments", assignments);
+    // Fetch only the first time it opens
+    if (assignments.length < 1) {
+      setLoading(true);
+      const res = await getAssignmentsForUserClass(supabase, classId);
+      console.log(res);
+      setAssignments(res);
+      setLoading(false);
+    }
+  }
+
   return (
     <Card className="p-[16px]">
-      <div className="flex items-start justify-between gap-4">
+      {/* Header */}
+      <div
+        className="flex items-start justify-between gap-4 cursor-pointer"
+        onClick={toggleOpen}
+      >
         <div>
           <div className="text-[#1F2937] font-semibold text-[16px]">
             {classRow.name}
@@ -25,8 +40,25 @@ export default function ClassCard({
             </span>
           </div>
         </div>
-        {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
+
+        {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
+
+      {/* Dropdown content */}
+      {open && (
+        <div className="mt-4 border-t border-gray-200 pt-3 space-y-2">
+          {loading && (
+            <div className="text-sm text-gray-500">Loading assignments…</div>
+          )}
+
+          {!loading && assignments?.length === 0 && (
+            <div className="text-sm text-gray-500">No assignments yet</div>
+          )}
+
+          {!loading &&
+            assignments?.map((a) => <AssignmentCard a={a} key={a.id} />)}
+        </div>
+      )}
     </Card>
   );
 }
