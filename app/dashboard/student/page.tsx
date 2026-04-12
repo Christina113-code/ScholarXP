@@ -13,6 +13,8 @@ import ClassCard from "@/app/components/class/ClassCard";
 import JoinClassForm from "@/app/components/class/JoinClassForm";
 import Spinner from "@/app/components/ui/Spinner";
 import Card from "@/app/components/ui/Card";
+import StudentActions from "@/app/components/class/StudentActions";
+import Button from "@/app/components/ui/Button";
 
 export default function StudentDashboardPage() {
   const router = useRouter();
@@ -110,7 +112,15 @@ export default function StudentDashboardPage() {
           ) : null}
 
           {!loadingClasses
-            ? classes.map((c) => <ClassCard key={c.id} classRow={c} />)
+            ? classes.map((c) => (
+                <ClassCard
+                  actions={false}
+                  key={c.id}
+                  classRow={c}
+                  supabase={supabase}
+                  classId={c.id}
+                />
+              ))
             : null}
         </div>
 

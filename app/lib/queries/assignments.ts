@@ -127,6 +127,9 @@ export async function getAssignmentsForUserClass(
   // }
 
   // Fetch assignments
+  console.log("supabase", supabase);
+
+  console.log("classId", classId);
   const { data: assignments, error } = await supabase
     .from("assignments")
     .select("*")
@@ -136,4 +139,17 @@ export async function getAssignmentsForUserClass(
   if (error) throw error;
 
   return assignments ?? [];
+}
+export async function getProblemsFromAssignmentId(
+  supabase: SupabaseClient,
+  assignmentId: string,
+) {
+  const { data, error } = await supabase
+    .from("assignment_problems")
+    .select("*")
+    .eq("assignment_id", assignmentId)
+    .order("order_index", { ascending: true });
+
+  if (error) throw error;
+  return data;
 }

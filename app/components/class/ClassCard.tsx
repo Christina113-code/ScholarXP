@@ -3,21 +3,26 @@ import Card from "@/app/components/ui/Card";
 import { getAssignmentsForUserClass } from "@/app/lib/queries/assignments";
 import { AssignmentsRow } from "@/app/types/supabase";
 import AssignmentCard from "../assignment/AssignmentCard";
+import Button from "../ui/Button";
+import { useRouter } from "next/navigation";
 
 export default function ClassCard({ classRow, actions, classId, supabase }) {
   const [open, setOpen] = useState(false);
   const [assignments, setAssignments] = useState<AssignmentsRow[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
   async function toggleOpen() {
     setOpen(!open);
     console.log("assignments", assignments);
     // Fetch only the first time it opens
     if (assignments.length < 1) {
       setLoading(true);
-      const res = await getAssignmentsForUserClass(supabase, classId);
-      console.log(res);
-      setAssignments(res);
+      const assignments = await getAssignmentsForUserClass(supabase, classId);
+      if (!assignments) {
+        setLoading(false);
+        return;
+      }
+      setAssignments(assignments);
       setLoading(false);
     }
   }
@@ -56,7 +61,17 @@ export default function ClassCard({ classRow, actions, classId, supabase }) {
           )}
 
           {!loading &&
-            assignments?.map((a) => <AssignmentCard a={a} key={a.id} />)}
+            assignments?.map((a) => (
+              <AssignmentCard
+                a={a}
+                key={a.id}
+                actions={
+                  <Button onClick={() => router.push(`/assignments/${a.id}`)}>
+                    Start assignment
+                  </Button>
+                }
+              />
+            ))}
         </div>
       )}
     </Card>

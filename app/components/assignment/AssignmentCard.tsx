@@ -1,6 +1,6 @@
 import React from "react";
 
-const AssignmentCard = ({ a }) => {
+const AssignmentCard = ({ a, actions }) => {
   return (
     <div
       key={a.id}
@@ -47,7 +47,7 @@ const AssignmentCard = ({ a }) => {
             : "No due date"}
         </span>
       </div>
-
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
       {/* Metadata grid */}
       <div className="grid grid-cols-2 gap-2 text-[12px] text-[#6B7280] pt-2">
         <div>
